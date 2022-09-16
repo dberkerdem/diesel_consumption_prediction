@@ -1,0 +1,12 @@
+dataload:
+  daas:
+    path: 'C:\Users\02485955\.credentials\daas_credentials.yaml'
+
+# preprocessing:
+#   target_col_list: ['date','province','diesel_types']
+#   row_drop_dict: {'province':'Toplam'}
+#   anomaly_col: 'current_month_consumption'
+
+# feature_engineering:
+ 
+  

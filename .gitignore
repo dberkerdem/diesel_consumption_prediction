@@ -1,0 +1,11 @@
+# # Directories
+# data/
+# env38/
+
+# Extensions
+*.csv
+*.xlsx
+*.xls
+
+# Files
+bireysel_proje.txt

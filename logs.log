@@ -1,0 +1,60 @@
+2022-09-02 10:28:24,747:WARNING:No module named 'prophet'.
+'prophet' is a soft dependency and not included in the pycaret installation. Please run: `pip install prophet` to install.
+2022-09-02 11:08:41,043:WARNING:c:\Users\02485955\bireysel_proje\env38\lib\site-packages\plotly_resampler\aggregation\aggregators.py:24: UserWarning: Could not import lttbc; will use a (slower) python alternative.
+  warnings.warn("Could not import lttbc; will use a (slower) python alternative.")
+
+2022-09-02 11:08:46,533:WARNING:No module named 'prophet'.
+'prophet' is a soft dependency and not included in the pycaret installation. Please run: `pip install prophet` to install.
+2022-09-02 11:08:48,663:INFO:PyCaret TSForecastingExperiment
+2022-09-02 11:08:48,663:INFO:Logging name: ts-default-name
+2022-09-02 11:08:48,663:INFO:ML Usecase: MLUsecase.TIME_SERIES
+2022-09-02 11:08:48,663:INFO:version 3.0.0.rc3
+2022-09-02 11:08:48,663:INFO:Initializing setup()
+2022-09-02 11:08:48,663:INFO:self.USI: 4a23
+2022-09-02 11:08:48,663:INFO:self.variable_keys: {'data', 'html_param', 'X_test_transformed', '_gpu_n_jobs_param', 'fold_param', '_all_metrics', 'log_plots_param', '_all_models', 'X_test', 'enforce_pi', 'gpu_param', 'USI', 'y', 'exogenous_present', 'primary_sp_to_use', 'all_sp_values', 'pipeline', 'approach_type', '_ml_usecase', 'display_container', 'y_transformed', 'fold_generator', 'y_train_transformed', 'exp_id', 'strictly_positive', 'X', 'seed', 'memory', 'X_transformed', 'logging_param', '_available_plots', 'y_train', 'variable_keys', '_all_models_internal', 'seasonal_period', 'enforce_exogenous', 'master_model_container', 'y_test', 'fh', 'index_type', 'seasonality_present', 'X_train', 'X_train_transformed', 'idx', 'y_test_transformed', 'model_engines', 'exp_name_log', 'n_jobs_param'}
+2022-09-02 11:08:48,664:INFO:Checking environment
+2022-09-02 11:08:48,664:INFO:python_version: 3.8.1
+2022-09-02 11:08:48,664:INFO:python_build: ('tags/v3.8.1:1b293b6', 'Dec 18 2019 23:11:46')
+2022-09-02 11:08:48,664:INFO:machine: AMD64
+2022-09-02 11:08:48,664:INFO:platform: Windows-10-10.0.19041-SP0
+2022-09-02 11:08:48,665:INFO:Memory: svmem(total=8476622848, available=1514590208, percent=82.1, used=6962032640, free=1514590208)
+2022-09-02 11:08:48,665:INFO:Physical Core: 2
+2022-09-02 11:08:48,665:INFO:Logical Core: 4
+2022-09-02 11:08:48,665:INFO:Checking libraries
+2022-09-02 11:08:48,665:INFO:System:
+2022-09-02 11:08:48,665:INFO:    python: 3.8.1 (tags/v3.8.1:1b293b6, Dec 18 2019, 23:11:46) [MSC v.1916 64 bit (AMD64)]
+2022-09-02 11:08:48,665:INFO:executable: c:\Users\02485955\bireysel_proje\env38\Scripts\python.exe
+2022-09-02 11:08:48,665:INFO:   machine: Windows-10-10.0.19041-SP0
+2022-09-02 11:08:48,665:INFO:PyCaret required dependencies:
+2022-09-02 11:08:48,671:WARNING:c:\Users\02485955\bireysel_proje\env38\lib\site-packages\_distutils_hack\__init__.py:30: UserWarning: Setuptools is replacing distutils.
+  warnings.warn("Setuptools is replacing distutils.")
+
+2022-09-02 11:08:49,249:INFO:                 pip: 22.2.2
+2022-09-02 11:08:49,249:INFO:          setuptools: 62.1.0
+2022-09-02 11:08:49,249:INFO:             pycaret: 3.0.0.rc3
+2022-09-02 11:08:49,249:INFO:             IPython: 8.4.0
+2022-09-02 11:08:49,249:INFO:          ipywidgets: 8.0.1
+2022-09-02 11:08:49,249:INFO:                tqdm: 4.64.0
+2022-09-02 11:08:49,249:INFO:               numpy: 1.21.6
+2022-09-02 11:08:49,250:INFO:              pandas: 1.4.4
+2022-09-02 11:08:49,250:INFO:              jinja2: 3.1.2
+2022-09-02 11:08:49,250:INFO:               scipy: 1.8.1
+2022-09-02 11:08:49,250:INFO:              joblib: 1.1.0
+2022-09-02 11:08:49,250:INFO:             sklearn: 1.1.2
+2022-09-02 11:08:49,250:INFO:                pyod: Installed but version unavailable
+2022-09-02 11:08:49,250:INFO:            imblearn: 0.9.1
+2022-09-02 11:08:49,250:INFO:   category_encoders: 2.5.0
+2022-09-02 11:08:49,250:INFO:            lightgbm: 3.3.2
+2022-09-02 11:08:49,250:INFO:               numba: 0.55.2
+2022-09-02 11:08:49,250:INFO:            requests: 2.28.1
+2022-09-02 11:08:49,250:INFO:          matplotlib: 3.5.3
+2022-09-02 11:08:49,253:INFO:          scikitplot: 0.3.7
+2022-09-02 11:08:49,253:INFO:         yellowbrick: 1.5
+2022-09-02 11:08:49,253:INFO:              plotly: 5.10.0
+2022-09-02 11:08:49,253:INFO:             kaleido: 0.2.1
+2022-09-02 11:08:49,253:INFO:         statsmodels: 0.13.2
+2022-09-02 11:08:49,253:INFO:              sktime: 0.11.4
+2022-09-02 11:08:49,253:INFO:               tbats: Installed but version unavailable
+2022-09-02 11:08:49,253:INFO:            pmdarima: 2.0.1
+2022-09-02 11:08:49,254:INFO:              psutil: 5.9.1
+2022-09-02 11:08:49,254:INFO:None
