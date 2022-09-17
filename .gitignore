@@ -1,6 +1,9 @@
 # # Directories
-# data/
-# env38/
+data/
+env38/
+notebooks/
+configs/
+models/
 
 # Extensions
 *.csv

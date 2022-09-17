@@ -3,16 +3,42 @@ import pandas as pd
 from datetime import datetime
 
 class FeatEng(ABC):
+    """FeatEng is the abstract class for feature engineering operations.
+    """
     def __init__(self, data: pd.DataFrame):
+        """Default Constructor
+
+        Args:
+            data (pd.DataFrame): Data to be Feature Engineered.
+        """
         self.data = data.copy()
         pass
     
 class FeatureEngineering(FeatEng):
+    """FeatureEngineering class contains required methods to perform data feature engineering operations.
+
+    Args:
+        FeatEng (ABC): FeatEng is the abstract class for feature engineering operations.
+    """
     def __init__(self, data:pd.DataFrame):
+        """Default Contructor.
+
+        Args:
+            data (pd.DataFrame): Data to be Feature Engineered.
+        """
         super().__init__(data=data)
         # self.date_col = date_col
 
     def feature_engineering(self, num_of_auto_reg_months: int=3)-> pd.DataFrame:
+        """This method performs consecutive feature engineering operations to add new features to the preprocessed data 
+        and return feature engineered dataframe.
+
+        Args:
+            num_of_auto_reg_months (int, optional): This argument indicates the lag. Defaults to 3.
+
+        Returns:
+            pd.DataFrame: Feature engineered dataframe.
+        """
         # Add auto regressive features
         self.add_auto_reg_features(num_of_auto_reg_months=num_of_auto_reg_months)
         # Add pandemic interval
@@ -27,6 +53,18 @@ class FeatureEngineering(FeatEng):
         return self.data
     
     def add_auto_reg_features(self, num_of_auto_reg_months: int):
+        """This method adds auto regressive features into self.data. 
+        Auto Regressive Features are:
+        - Last years same months consumption
+        - Total consumption since last year
+        - Current month share
+        - Lag x previous months shares
+        - Lag x previous month consumptions
+        - Quarter of the year
+
+        Args:
+            num_of_auto_reg_months (int): This argument indicates the lag.
+        """
         empty_df = pd.DataFrame()
         for province in self.data.province.unique():
             # Filter data by province
@@ -54,6 +92,12 @@ class FeatureEngineering(FeatEng):
         self.data = empty_df.copy()      
         
     def add_covid(self,start_date: datetime, end_date: datetime):
+        """This method adds covid pandemic feature into the self.data.  
+        1 indicates that covid pandemic situation, whereas 0 indicates non-pandemic situation.
+        Args:
+            start_date (datetime): Start date of covid pandemic period.
+            end_date (datetime): End date of covid pandemic period.
+        """
         temp_df = self.data.copy()
         # Initialize covid column
         temp_df["covid"] = 0
@@ -62,6 +106,8 @@ class FeatureEngineering(FeatEng):
         self.data = temp_df.copy()
     
     def add_school_holidays(self):
+        """Burayı düzenlicez
+        """
         temp_df = self.data.copy()
         # Initialize school_holiday column
         temp_df["school_holiday"] = 0
@@ -91,5 +137,7 @@ class FeatureEngineering(FeatEng):
         self.data = temp_df.copy()     
         
     def demographics(self):
+        """This method adds demographic features into self.data
+        """
         demographics = pd.read_excel("data/demographics.xls")     
         self.data = pd.merge(self.data,demographics, on=["province"], how="left")

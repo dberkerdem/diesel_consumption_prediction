@@ -2,19 +2,29 @@ from datetime import timedelta
 from abc import ABC, abstractmethod
 
 class QueryGenerator(ABC):
+    """QueryGenerator is the abstract class for query generation in different query languages.
+    """
     def __init__(self):
+        """Default Constructor
+        """
         self.query = self.get_query()
     
     @abstractmethod    
     def get_query(self):
-        pass
-    
-    def __call__(self):
-        return self.query
-    
+        """Abstract method to retrieve queries.
+        """
+        pass  
     
 class PosgreQueryGenerator(QueryGenerator):    
-    def __init__(self, start_date, end_date, table_name: str, size: int=None):
+    def __init__(self, start_date:str, end_date:str, table_name: str, size: int):
+        """Default Constructor
+
+        Args:
+            start_date (str): Refers to the starting date of the time interval.
+            end_date (str): Refers to the ending date of the time interval.
+            table_name (str): Name of the table of interest in the database. Defaults to None.
+            size (int): Indicates the number of records to be fetched. Defaults to None.
+        """
         self.start_date = start_date
         self.end_date = end_date
         self.table_name = table_name
@@ -22,6 +32,11 @@ class PosgreQueryGenerator(QueryGenerator):
         super().__init__()
         
     def get_query(self)-> str:
+        """This method generates the required query based on given input variables
+
+        Returns:
+            str: Returns a NoSQL query in string format
+        """
         if self.size is not None:
             self.size = "limit %d" % (self.size)
         else:
@@ -47,7 +62,7 @@ class CassandraQueryGenerator(QueryGenerator):
         super().__init__()
         
     def get_query(self)-> str:
-        """This method generates the required query based on given input variables
+        """This method generates the required query based on given input variables in CQL language
 
         Args:
             start_date (date): datetime.Date object refers to the starting date of the time interval. Defaults to None.
