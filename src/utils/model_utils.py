@@ -10,7 +10,7 @@ def save_model(model, model_name: str, folder_name: str="models"):
         model_name (str): Name of the model.
         folder_name (str, optional): Folder of the model to be saved. Defaults to "models".
     """
-    pickle.dump(model, open(f"{folder_name}+/{model_name}", 'wb'))
+    pickle.dump(model, open(f"{folder_name}/{model_name}", 'wb'))
 
 # Load the model
 def load_model(model_name:str ,folder_name: str="models")-> Any:

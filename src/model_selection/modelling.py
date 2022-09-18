@@ -71,7 +71,7 @@ class xgb_simulator(BaseEstimator):
         Args:
             X_train (pd.DataFrame): Features of the training set.
             y_train (pd.DataFrame): Target value of training set.
-            parallel_jobs (int, optional): _description_. Defaults to -1.
+            parallel_jobs (int, optional): Number of parallel jobs. Defaults to -1.
             save (bool, optional): Logical flag for saving the model. Defaults to True.
             model_name (str, optional): Name of the model to be saved. Defaults to "xgb_model.pkl".
         """
@@ -92,6 +92,7 @@ class xgb_simulator(BaseEstimator):
         # Set the best parameters and estimator
         self._best_params = xgb_grid.best_params_
         self._model = xgb_grid.best_estimator_
+        print("Save is: ", save)
         if save:
             save_model(model=self._model,model_name=model_name)
             
