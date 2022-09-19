@@ -33,7 +33,7 @@ class FeatureEngineering(FeatEng):
         """
         super().__init__(data=data)
         # self.date_col = date_col
-
+    
     def feature_engineering(self, num_of_auto_reg_months: int=3)-> pd.DataFrame:
         """This method performs consecutive feature engineering operations to add new features to the preprocessed data 
         and return feature engineered dataframe.
@@ -44,9 +44,6 @@ class FeatureEngineering(FeatEng):
         Returns:
             pd.DataFrame: Feature engineered dataframe.
         """
-        # Add Prophet predictions
-        self.add_PROPHET_predictions_()
-        print("add_PROPHET_preditions_ done")
         print(self.data.columns)
         # Add ARIMA predictions
         self.add_ARIMA_predictions_()
@@ -68,21 +65,22 @@ class FeatureEngineering(FeatEng):
         self.demographics()
         print("demographics done")
         print(self.data.columns)
+        # Add Prophet predictions
+        self.add_PROPHET_predictions_()
+        print("add_PROPHET_predictions_ done")
         # Drop NaN values generated through creating auto regressive features
         self.data.dropna(inplace=True)
         return self.data
     
     def add_PROPHET_predictions_(self,):
-        self.data= stats_PROPHET(data=self.data).predictions.copy()
+        prophet_data = stats_PROPHET(data=self.data[["date","province","current_month_consumption"]]).predictions.copy()
+        print(prophet_data.columns)
+        self.data = pd.merge(self.data, prophet_data, on=["date","province","current_month_consumption"], how="left")
         pass
-    def add_ARIMA_predictions_(self, col_list: list=None):
+    def add_ARIMA_predictions_(self,):
         """This method initializes an stats_ARIMA object and insert ARIMA predictions to self.data.
         """
-        if col_list is None:
-            col_list = ["date","province","current_month_consumption"]
-        arima_df = stats_ARIMA(data=self.data[col_list]).predictions.copy(),
-        self.data = self.data.merge(arima_df, on=col_list, how=left)
-        pass
+        self.data= stats_ARIMA(data=self.data).predictions.copy()
     
     def add_auto_reg_features(self, num_of_auto_reg_months: int):
         """This method adds auto regressive features into self.data. 

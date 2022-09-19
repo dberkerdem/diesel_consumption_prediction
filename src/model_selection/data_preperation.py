@@ -63,6 +63,10 @@ class DataPreperation(BaseForPreperation):
         y_test = data_test[[target_column]]
         if n_months is not None and n_provinces is not None:
             return X_train[-n_months*n_provinces:], y_train[-n_months*n_provinces:], X_test, y_test
+        print("Maximum date at train is: ", X_train.index.max()," Shape is: ", X_train.shape)
+        print("Minimum date at train is: ", X_train.index.min()," Shape is: ", X_train.shape)
+        print("Maximum date at test is: ", X_test.index.max(), " Shape is: ", X_test.shape)
+        print("Minimum date at test is: ", X_test.index.min(), " Shape is: ", X_test.shape)
         return X_train, y_train, X_test, y_test
     
     def ttvs_last_month(self, target_column: str="current_month_consumption", 
