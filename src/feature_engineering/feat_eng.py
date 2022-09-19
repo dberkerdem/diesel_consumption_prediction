@@ -1,5 +1,4 @@
 from abc import ABC
-from turtle import left
 from typing import Any
 import pandas as pd
 from datetime import datetime,date
@@ -44,30 +43,18 @@ class FeatureEngineering(FeatEng):
         Returns:
             pd.DataFrame: Feature engineered dataframe.
         """
-        print(self.data.columns)
         # Add ARIMA predictions
         self.add_ARIMA_predictions_()
-        print("add_ARIMA_predictions_ done")
-        print(self.data.columns)
         # Add auto regressive features
         self.add_auto_reg_features(num_of_auto_reg_months=num_of_auto_reg_months)
-        print("add_auto_reg_features done")
-        print(self.data.columns)
         # Add pandemic interval
         self.add_covid(start_date=datetime(2020,4,1),end_date=datetime(2021,6,1))
-        print("add_covid done")
-        print(self.data.columns)
         # Add school holidays
         self.add_school_holidays()
-        print("add_school_holidays done")
-        print(self.data.columns)
         # Add demographics
         self.demographics()
-        print("demographics done")
-        print(self.data.columns)
         # Add Prophet predictions
         self.add_PROPHET_predictions_()
-        print("add_PROPHET_predictions_ done")
         # Drop NaN values generated through creating auto regressive features
         self.data.dropna(inplace=True)
         return self.data
