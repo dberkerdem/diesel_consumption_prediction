@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 import pandas as pd
 import numpy as np
 from dateutil.relativedelta import relativedelta
@@ -14,7 +14,7 @@ class Preprocess(ABC):
         """
         self.data = data.copy()
         pass
-    
+
 class PreprocessData(Preprocess):
     """PreprocessData class contains required methods to perform data preprocessing operations.
 
@@ -31,7 +31,7 @@ class PreprocessData(Preprocess):
         super().__init__(data=data)
         self.date_col = date_col
 
-    def prep_data(self, target_col_list: list=None, row_drop_dict: dict=None, format_date_flag: bool=True, col_rename_dict: dict=None, anomaly_col: str=None, col_list: list=None, months: int=3)-> pd.DataFrame:
+    def preprocess_data(self, target_col_list: list=None, row_drop_dict: dict=None, format_date_flag: bool=True, col_rename_dict: dict=None, anomaly_col: str=None, col_list: list=None, months: int=3)-> pd.DataFrame:
         """Takes an oil consumption df of various oil types for provinces, performs required consecutive preprocessing operations 
         and returns a df of diesel consumption.
 
@@ -60,9 +60,8 @@ class PreprocessData(Preprocess):
         self.fix_anomaly(anomaly_col=anomaly_col)
         # Fill Missing Months
         self.fill_missing_values(col_list=col_list, months=months)
-        
-        
-        return self.data
+
+        return self.data.sort_values(by=["date","province"])
     
     def filter_columns(self, target_col_list: list):
         """This method removes unnecessary columns and reduce it to only motorin.

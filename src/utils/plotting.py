@@ -21,18 +21,17 @@ def plot_province(df: pd.DataFrame, col_x: str, col_y: str, province: str, stdev
     plt.title(province+" "+ df_.date.min().strftime("%Y-%m-%d")+" : "+df_.date.max().strftime("%Y-%m-%d"))
     plt.show()
 
-def plot_metrics(df: pd.DataFrame, col_x: str, col_y1: str, col_y2: str):
+def plot_metrics(df: pd.DataFrame, col_x: str, **kwargs):
     df_ = df.copy()
     print("Shape of dataframe is : ", df_.shape)
     plt.style.use('ggplot')
     plt.figure(figsize=(25,5))
     x = df_[col_x]
-    y1 = df_[col_y1]
-    y2 = df_[col_y2]
-    # Plot x and y
-    plt.plot(x,y1, "o", color="black", linestyle="--", )
-    plt.plot(x,y2, "o", color="red", linestyle="--", )
+    for col in kwargs:
+        y = df_[kwargs[col]]
+        plt.plot(x,y, "o", linestyle="--", )  
+    
     # Edit the plot
     plt.tick_params(axis='x',rotation=90)
-    plt.legend([col_y1,col_y2], loc="best")
+    plt.legend([val for val in kwargs.values()], loc="best")
     plt.show()

@@ -28,8 +28,8 @@ class DataPreperation(BaseForPreperation):
         """
         super().__init__(data=data)
     
-    def tts_last_month(self, index_column2: str, target_column: str="current_month_consumption", 
-                        index_column1: str="date",  lag: int=0):
+    def ts_train_test_split(self, index_column2: str, target_column: str="current_month_consumption", 
+                        index_column1: str="date",  lag: int=0, n_months: int=None, n_provinces: int=81):
         """This method splits data into train and test. Deciding the test sets' date as (last_month-lag) and previous dates becomes the train set.
 
         Args:
@@ -61,13 +61,14 @@ class DataPreperation(BaseForPreperation):
         y_train = data_train[[target_column]]
         X_test = data_test.drop(columns=[target_column])
         y_test = data_test[[target_column]]
-        
+        if n_months is not None and n_provinces is not None:
+            return X_train[-n_months*n_provinces:], y_train[-n_months*n_provinces:], X_test, y_test
         return X_train, y_train, X_test, y_test
     
     def ttvs_last_month(self, target_column: str="current_month_consumption", 
                         index_column1: str="date", index_column2: str=None, lag: int=0, split_size: float=0.03):
         from sklearn.model_selection import train_test_split
-        X_train, y_train, X_test, y_test = self.tts_last_month(target_column=target_column, index_column1=index_column1, index_column2=index_column2, lag=lag)
+        X_train, y_train, X_test, y_test = self.ts_train_test_split(target_column=target_column, index_column1=index_column1, index_column2=index_column2, lag=lag)
         X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=split_size, random_state=12)
         return  X_train, y_train, X_test, y_test, X_val, y_val
 

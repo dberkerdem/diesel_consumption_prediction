@@ -50,6 +50,11 @@ class BaseEstimator(ABC):
 
 
 class xgb_simulator(BaseEstimator):
+    """This class contains required methods to utilize XGBoost module.
+    XGBOOST = https://xgboost.readthedocs.io/en/stable/parameter.html
+    Args:
+        BaseEstimator (_type_): _description_
+    """
     def __init__(self, **kwargs):
         """Default Constructor.
         """
@@ -92,7 +97,6 @@ class xgb_simulator(BaseEstimator):
         # Set the best parameters and estimator
         self._best_params = xgb_grid.best_params_
         self._model = xgb_grid.best_estimator_
-        print("Save is: ", save)
         if save:
             save_model(model=self._model,model_name=model_name)
             

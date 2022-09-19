@@ -1,6 +1,11 @@
 from abc import ABC
+from turtle import left
+from typing import Any
 import pandas as pd
-from datetime import datetime
+from datetime import datetime,date
+from dateutil.relativedelta import relativedelta
+import holidays
+from src.model_selection.statistics import stats_ARIMA, stats_PROPHET
 
 class FeatEng(ABC):
     """FeatEng is the abstract class for feature engineering operations.
@@ -39,18 +44,45 @@ class FeatureEngineering(FeatEng):
         Returns:
             pd.DataFrame: Feature engineered dataframe.
         """
+        # Add Prophet predictions
+        self.add_PROPHET_predictions_()
+        print("add_PROPHET_preditions_ done")
+        print(self.data.columns)
+        # Add ARIMA predictions
+        self.add_ARIMA_predictions_()
+        print("add_ARIMA_predictions_ done")
+        print(self.data.columns)
         # Add auto regressive features
         self.add_auto_reg_features(num_of_auto_reg_months=num_of_auto_reg_months)
+        print("add_auto_reg_features done")
+        print(self.data.columns)
         # Add pandemic interval
         self.add_covid(start_date=datetime(2020,4,1),end_date=datetime(2021,6,1))
+        print("add_covid done")
+        print(self.data.columns)
         # Add school holidays
         self.add_school_holidays()
+        print("add_school_holidays done")
+        print(self.data.columns)
         # Add demographics
         self.demographics()
+        print("demographics done")
+        print(self.data.columns)
         # Drop NaN values generated through creating auto regressive features
         self.data.dropna(inplace=True)
-
         return self.data
+    
+    def add_PROPHET_predictions_(self,):
+        self.data= stats_PROPHET(data=self.data).predictions.copy()
+        pass
+    def add_ARIMA_predictions_(self, col_list: list=None):
+        """This method initializes an stats_ARIMA object and insert ARIMA predictions to self.data.
+        """
+        if col_list is None:
+            col_list = ["date","province","current_month_consumption"]
+        arima_df = stats_ARIMA(data=self.data[col_list]).predictions.copy(),
+        self.data = self.data.merge(arima_df, on=col_list, how=left)
+        pass
     
     def add_auto_reg_features(self, num_of_auto_reg_months: int):
         """This method adds auto regressive features into self.data. 
@@ -106,38 +138,64 @@ class FeatureEngineering(FeatEng):
         self.data = temp_df.copy()
     
     def add_school_holidays(self):
-        """Burayı düzenlicez
+        """This method adds sum of weekend_days + school_holidays + n_goverment_holidays of that month into self.data.
         """
+        # Intiialize temporary dataframe
         temp_df = self.data.copy()
         # Initialize school_holiday column
         temp_df["school_holiday"] = 0
-        # ocak
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 15 if row.date.month==1 else row.school_holiday, axis=1)
-        # şubat
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 14 if row.date.month==2 else row.school_holiday, axis=1)
-        # mart
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 8 if row.date.month==3 else row.school_holiday, axis=1)
-        # nisan
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 13 if row.date.month==4 else row.school_holiday, axis=1)
-        # mayıs
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 12 if row.date.month==5 else row.school_holiday, axis=1)
-        # haziran
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 17 if row.date.month==6 else row.school_holiday, axis=1)
-        # temmuz & ağustos
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 30 if row.date.month==7 or \
-                                                row.date.month==8 else row.school_holiday, axis=1)
-        # eylül
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 11 if row.date.month==9 else row.school_holiday, axis=1)
-        # ekim 
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 10 if row.date.month==10 else row.school_holiday, axis=1)
-        # kasım
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 13 if row.date.month==11 else row.school_holiday, axis=1)
-        # aralık
-        temp_df["school_holiday"] = temp_df.apply(lambda row: 7 if row.date.month==12 else row.school_holiday, axis=1)
+        # Initialize Govermantal holidays
+        gov_holidays = holidays.country_holidays('TR')
+        # Iterate over rows
+        temp_df["school_holiday"] = temp_df.apply(lambda row: self.get_holidays(start_date=row.date, gov_holidays=gov_holidays), axis=1)
+        # Update the data
         self.data = temp_df.copy()     
         
+    def get_holidays(self, start_date: date, gov_holidays: Any):
+        """This method calculates total number of holidays starting from given start date to the end of that month.
+        HOLIDAYS = https://github.com/dr-prodigy/python-holidays
+        Args:
+            start_date (date): First day of that month.
+            gov_holidays (Any): Govermantal holidays object of specified country from holidays library.
+        """
+        # Arrange date start = date(2022,1,1)
+        end = (start_date + relativedelta(months=1,days=-1))
+        # Initialize Counters
+        n_gov_holidays = school_holidays = weekend = 0
+        # Initialize Flags
+        semester, start_end = True,True
+        for dt in pd.date_range(start=start_date,end=end):
+            # add weekends
+            if dt.day_of_week>4:
+                weekend += 1
+            # add government-designated holidays
+            elif dt in gov_holidays and dt.day_of_week<5:
+                n_gov_holidays += 1
+            # add school holidays
+            elif dt.month == 7 or dt. month == 8:
+                school_holidays +=1
+            # add semesters 
+            elif (dt.month == 1 or dt.month == 2) and semester:
+                # Subtract weekends
+                school_holidays += (7-2)
+                semester = False
+            # add start and end of schools
+            elif (dt.month == 6 or dt.month == 9) and start_end:
+                # Subtract weekends
+                school_holidays += (15-4)
+                start_end = False
+        return(weekend+school_holidays+n_gov_holidays)        
+        
+            
     def demographics(self):
         """This method adds demographic features into self.data
         """
-        demographics = pd.read_excel("data/demographics.xls")     
-        self.data = pd.merge(self.data,demographics, on=["province"], how="left")
+        # Intiialize temporary dataframe
+        temp_df = self.data.copy()
+        # Load demographics dataframe
+        demographics = pd.read_excel('data/demographics_final.xlsx')
+        # Add years to the temporary dataframe
+        temp_df["years"] = temp_df["date"].dt.year
+        new_df = pd.merge(temp_df,demographics, on=["years","province"], how="left")
+        new_df["population"].fillna(method="ffill",inplace=True)     
+        self.data = new_df.drop(columns=["years"])
