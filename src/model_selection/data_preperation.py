@@ -5,13 +5,9 @@ from dateutil.relativedelta import relativedelta
 class BaseForPreperation(ABC):
     """BaseForPreperation is the abstract class for data preperation classes in this module.
     """
-    def __init__(self, data: pd.DataFrame):
+    def __init__(self, ):
         """Default Constructor.
-
-        Args:
-            data (pd.DataFrame): Data to be prepared.
         """
-        self.data = data.copy()
         pass
 
 class DataPreperation(BaseForPreperation):
@@ -20,19 +16,17 @@ class DataPreperation(BaseForPreperation):
     Args:
         BaseForPreperation (ABC): BaseForPreperation is the abstract class for data preperation classes in this module.
     """
-    def __init__(self, data:pd.DataFrame):
+    def __init__(self):
         """Default Constructor.
-
-        Args:
-            data (pd.DataFrame): Data to be prepared.
         """
-        super().__init__(data=data)
-    
-    def ts_train_test_split(self, index_column2: str, target_column: str="current_month_consumption", 
+        # super().__init__(data=data)
+    @staticmethod
+    def ts_train_test_split(data: pd.DataFrame, index_column2: str, target_column: str="current_month_consumption", 
                         index_column1: str="date",  lag: int=0, n_months: int=None, n_provinces: int=81):
         """This method splits data into train and test. Deciding the test sets' date as (last_month-lag) and previous dates becomes the train set.
 
         Args:
+            data (pd.DataFrame): Data to be prepared.
             index_column2 (str): Name of the second index column
             target_column (str, optional): Name of the target value. Defaults to "current_month_consumption".
             index_column1 (str, optional): Name of the first index column. Defaults to "date".
@@ -41,12 +35,12 @@ class DataPreperation(BaseForPreperation):
         Returns: X_train, y_train, X_test and y_test
         """
         # Set index of date column
-        self.data = self.data.set_index([index_column1]).copy()
+        temp_df = data.set_index([index_column1]).copy()
         # Format end_date 
-        end_date = (self.data.index.max() -relativedelta(months=lag)).strftime("%Y-%m-%d")
+        end_date = (temp_df.index.max() -relativedelta(months=lag)).strftime("%Y-%m-%d")
         # Split data into train and test
-        data_train = self.data.loc[self.data.index < end_date].copy()
-        data_test = self.data.loc[self.data.index == end_date].copy()
+        data_train = temp_df.loc[temp_df.index < end_date].copy()
+        data_test = temp_df.loc[temp_df.index == end_date].copy()
         
         if index_column2:
             data_train = data_train.reset_index().set_index([index_column1, index_column2]).copy()

@@ -34,7 +34,7 @@ class FeatureEngineering(FeatEng):
         super().__init__(data=data)
         # self.date_col = date_col
     
-    def feature_engineering(self, num_of_auto_reg_months: int=3)-> pd.DataFrame:
+    def feature_engineering(self, num_of_auto_reg_months: int=6)-> pd.DataFrame:
         """This method performs consecutive feature engineering operations to add new features to the preprocessed data 
         and return feature engineered dataframe.
 
@@ -91,9 +91,11 @@ class FeatureEngineering(FeatEng):
         - Lag x previous months shares
         - Lag x previous month consumptions
         - Quarter of the year
-
+        
         Args:
             num_of_auto_reg_months (int): This argument indicates the lag.
+            
+            TODO: Update here
         """
         empty_df = pd.DataFrame()
         for province in self.data.province.unique():
@@ -101,22 +103,25 @@ class FeatureEngineering(FeatEng):
             temp_df = self.data.query(f"province == '{province}'")
             # Reset index
             temp_df = temp_df.reset_index(drop=True)
-            # Add last year consumption
-            temp_df["last_year_same_month_consumption"] = temp_df.current_month_consumption.shift(12)
             # Add last year total consumption
             temp_df["last_year_total_consumption"] = temp_df.current_month_consumption.rolling(window=12,closed="left").sum()
-            # Monthly Share for current consumption
-            temp_df["current_month_share"] = temp_df["current_month_consumption"]/temp_df["last_year_total_consumption"]
+            # Add Rolling means
+            for i in range(1, num_of_auto_reg_months):
+                col_name = f"rolling_mean_{i+1}"
+                window = i+1
+                temp_df[col_name] = temp_df.current_month_consumption.shift(1).rolling(window=window).mean()
             # Add previous month shares
             for i in range(num_of_auto_reg_months):
-                col_name = f"previous_{i+1}_month_share"
-                temp_df[col_name] = temp_df.current_month_share.shift(i+1)
+                col_name = f"lag{i+1}_monthly_share"
+                temp_df[col_name] = temp_df.current_month_consumption.shift(i+1)/temp_df.last_year_total_consumption.shift(i+1)
             # Add previous months consumptions, i.e. lags
             for i in range(num_of_auto_reg_months):
-                col_name = f"previous_{i+1}_month_consumption"
+                col_name = f"lag{i+1}"
                 temp_df[col_name] = temp_df.current_month_consumption.shift(i+1)
             # Add quarter of the year
             temp_df['quarter'] = temp_df['date'].dt.quarter
+            # Add month of the year
+            temp_df['month'] = temp_df['date'].dt.month
             
             empty_df = pd.concat([empty_df,temp_df], ignore_index=True)
         self.data = empty_df.copy()      
