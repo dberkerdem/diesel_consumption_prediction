@@ -99,7 +99,7 @@ class FeatureEngineering(FeatEng):
             # Add previous month shares
             for i in range(num_of_auto_reg_months):
                 col_name = f"lag{i+1}_monthly_share"
-                temp_df[col_name] = temp_df.current_month_consumption.shift(i+1)/temp_df.last_year_total_consumption.shift(i+1)
+                temp_df[col_name] = temp_df.current_month_consumption.shift(i)/temp_df.last_year_total_consumption.shift(i)
             # Add previous months consumptions, i.e. lags
             for i in range(num_of_auto_reg_months):
                 col_name = f"lag{i+1}"
