@@ -48,7 +48,7 @@ class GBTrees(BaseEstimator):
         return estimator_fit_pipeline
             
     def tree_predict_pipeline_(self, X_train: pd.DataFrame, y_train: pd.DataFrame, X_test: pd.DataFrame, 
-                               y_test: pd.DataFrame, hyper_params:dict, run: int):
+                               y_test: pd.DataFrame, hyper_params:dict, run: int=0):
         estimator_predict_pipeline = y_test.reset_index(level=["date"],drop=True).copy()
         fitted_gbtrees = self.tree_fit_pipeline_(X_train=X_train, y_train=y_train, hyper_params=hyper_params)
         for est in self.estimator_list:

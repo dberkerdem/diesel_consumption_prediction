@@ -10,7 +10,12 @@ class BaseEstimator(ABC):
     def __init__(self, **kwargs):
         """Default Constructor
         """
-        pass    
+        self.best_models_params_: dict=dict()
+        pass
+    
+    @property
+    def optimum_results(self):
+        return self.best_models_params_    
     
 class HyparamOptimizer(BaseEstimator):
     def __init__(self, **kwargs):
@@ -43,8 +48,7 @@ class HyparamOptimizer(BaseEstimator):
                 )
             grid.fit(X=X_train, y=y_train, **estimator_params["fit_params"][f"{est}__fit_params"])
             optimal_params["init_params"][f"{est}__init_params"] = grid.best_params_
-            # best_models_params[est] = [grid.best_estimator_,grid.best_params_]
-            print(f"R-S for {est} is done.")
+            self.best_models_params_[est] = [grid.best_estimator_,grid.best_params_]
         return optimal_params
         
     def hp_optimizer(self, estimator: Any, search_params:dict, cv:Any, optimizer_type:str, scoring:str, n_jobs:int):
